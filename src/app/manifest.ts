@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'jobLog',
-    short_name: 'jobLog',
-    description: 'jobLog — Manage your job application effortlessly',
+    name: 'jobsLog',
+    short_name: 'jobsLog',
+    description: 'jobsLog — Manage your job application effortlessly',
     start_url: '/',
     display: 'standalone',
     orientation: "portrait",

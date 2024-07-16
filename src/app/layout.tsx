@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title:
-    "jobLog - Application Tracker",
+    "jobsLog - Application Tracker",
   description:
     "Manage your job application effortlessly.",
   authors: [
