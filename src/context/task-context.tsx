@@ -13,6 +13,7 @@ interface Task {
   title: string;
   company: string;
   status: string;
+  url?: string;  // Added optional url property
 }
 
 interface TaskContextProps {
@@ -21,6 +22,7 @@ interface TaskContextProps {
     title: string;
     company: string;
     status: string;
+    url?: string;  // Added optional url property
   }) => void;
   updateTask: (taskId: string, updatedTask: Partial<Task>) => void;
   deleteTask: (taskId: string) => void;
@@ -70,13 +72,14 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     title: string;
     company: string;
     status: string;
+    url?: string;  // Added optional url property
   }) => {
     const tasks = getTasks();
 
     if (Array.isArray(tasks)) {
       const updatedTasks = [
         ...tasks,
-        createTask(newTask.title, newTask.company, newTask.status),
+        createTask(newTask.title, newTask.company, newTask.status, newTask.url),
       ];
       saveTasks(updatedTasks);
       setTasks(updatedTasks);
@@ -84,12 +87,11 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       console.error("Existing tasks is not an array:", tasks);
       // Handle the situation where tasks is not an array
       const updatedTasks = [
-        createTask(newTask.title, newTask.company, newTask.status),
+        createTask(newTask.title, newTask.company, newTask.status, newTask.url),
       ];
       saveTasks(updatedTasks);
       setTasks(updatedTasks);
     }
-
   };
 
   const updateTask = (taskId: string, updatedTask: Partial<Task>) => {
@@ -138,11 +140,12 @@ export const useTask = () => {
   return context;
 };
 
-const createTask = (title: string, company: string, status: string): Task => {
+const createTask = (title: string, company: string, status: string, url?: string): Task => {
   return {
     id: uuidv4(),
     title,
     company,
     status,
+    url,  // Added url property
   };
 };

@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -31,10 +32,38 @@ export function DataTableColumnHeader<TData, TValue>({
     return <div className={cn(className)}>{title}</div>;
   }
 
+  const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleDropdownToggle = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (isOpen) {
+      setEditOpen(false);
+    }
+  };
+
   return (
-    <div className={cn("flex items-center space-x-2", className)}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+    <div className={cn("flex items-center space-x-2", className)} ref={dropdownRef}>
+      <DropdownMenu onOpenChange={handleDropdownToggle} open={open}>
+        <DropdownMenuTrigger
+          asChild
+          onPointerDown={(e) => e.preventDefault()}
+          onClick={() => setOpen((prev) => !prev)}
+        >
           <Button
             variant="ghost"
             size="sm"
@@ -51,16 +80,16 @@ export function DataTableColumnHeader<TData, TValue>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
+          <DropdownMenuItem onClick={() => column.toggleSorting(false)} className="cursor-pointer">
             <ArrowUpIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
             Asc
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
+          <DropdownMenuItem onClick={() => column.toggleSorting(true)} className="cursor-pointer">
             <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
             Desc
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
+          <DropdownMenuItem onClick={() => column.toggleVisibility(false)} className="cursor-pointer">
             <EyeNoneIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
             Hide
           </DropdownMenuItem>

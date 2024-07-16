@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'iTasks',
-    short_name: 'iTasks',
-    description: 'iTasks — simplifying task management with seamless efficiency and mastering your time effectively',
+    name: 'jobLog',
+    short_name: 'jobLog',
+    description: 'jobLog — Manage your job application effortlessly',
     start_url: '/',
     display: 'standalone',
     orientation: "portrait",

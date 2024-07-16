@@ -9,6 +9,7 @@ import { DataTableRowTitle } from "./data-table-row-title";
 import { DataTableRowStatus } from "./data-table-row-status";
 import { DataTableRowCompany } from "./data-table-row-company";
 import { Checkbox } from "@/components/ui/checkbox";
+import DataTableRowURL from "./data-table-row-url";
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -40,5 +41,14 @@ export const columns: ColumnDef<Task>[] = [
       </div>
     ),
     cell: ({ row }) => <DataTableRowCompany row={row} />,
+  },
+  {
+    accessorKey: "url",
+    header: ({ column }) => (
+      <div className="max-w-[120px] md:max-w-[300px]">
+        <DataTableColumnHeader column={column} title="URL" />
+      </div>
+    ),
+    cell: ({ row }) => <DataTableRowURL row={row} />,
   },
 ];

@@ -20,18 +20,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { statuses } from "../data/data";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Modal } from "@/components/ui/modal";
+import { DialogFooter } from "@/components/ui/dialog";
 
 const FormSchema = z.object({
   title: z.string().min(2, {
-    message: "Type role title (ex: SEO update) ",
+    message: "This field is required ",
   }),
   company: z.string().min(2, {
-    message: "Write task company (ex: ABC Corp) ",
+    message: "This field is required ",
   }),
   status: z.string().min(2, {
-    message: "Task Status (ex: todo)",
+    message: "This field is required",
   }),
+  url: z.string().url().optional().or(z.literal('')),
 });
 
 interface AddTaskModalProps {
@@ -48,6 +50,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ open, onClose, initi
       title: "",
       company: "",
       status: "",
+      url: "",
     },
   });
 
@@ -59,6 +62,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ open, onClose, initi
         title: "",
         company: "",
         status: "",
+        url: "",
       });
     }
   }, [initialData, open, form]);
@@ -77,69 +81,91 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({ open, onClose, initi
   }
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader className="mb-4">
-          <DialogTitle>{initialData ? "Edit Applicant" : "Add Applicant"}</DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
+    <Modal
+      title={initialData ? "Edit Applicant" : "Add Applicant"}
+      description="Fill out the details below:"
+      isOpen={open}
+      onClose={onClose}
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 mt-2 text-sm">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <label htmlFor="title">Role*</label>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="company"
+            render={({ field }) => (
+              <FormItem>
+                <label htmlFor="title">Company*</label>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <label htmlFor="title">Status</label>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <Input placeholder="Role" {...field} />
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="company"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="Company" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {statuses.map((status: any, index: number) => (
-                        <SelectItem key={index} value={status.value} className="cursor-pointer">
-                          <div className="flex justify-center items-center gap-3">
-                            <status.icon /> {status.label}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <DialogFooter>
-              <Button type="submit" size="sm" variant="default" className="h-8 text-xs md:mt-4">Save</Button>
-              <Button type="button" size="sm" variant="ghost" onClick={onClose} className="h-8 text-xs md:mt-4 md:mb-0 mb-2">Cancel</Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+                  <SelectContent ref={(ref) => { if (!ref) return; ref.ontouchstart = (e) => { e.preventDefault(); }; }}>
+                    {statuses.map((status: any, index: number) => (
+                      <SelectItem key={index} value={status.value} className="cursor-pointer">
+                        <div className="flex justify-center items-center gap-3">
+                          <status.icon /> {status.label}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="url"
+            render={({ field }) => (
+              <FormItem>
+                <label htmlFor="URL">URL</label>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <DialogFooter>
+            <div className="flex w-full items-center justify-end space-x-2 pt-6">
+              <Button type="button" size="sm" variant="outline" onClick={onClose} className='h-8 text-xs md:text-sm align-middle'>
+                Cancel
+              </Button>
+              <Button type="submit" size="sm" variant="default" className='h-8 text-xs md:text-sm'>
+                Save
+              </Button>
+            </div>
+          </DialogFooter>
+        </form>
+      </Form>
+    </Modal>
   );
-};
+}

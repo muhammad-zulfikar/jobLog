@@ -1,5 +1,5 @@
 import { useTask } from "@/context/task-context";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { labels, statuses } from "../data/data";
 import {
   Select,
@@ -14,6 +14,30 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function DataTableRowStatus({ row }: any) {
+  const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleDropdownToggle = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (isOpen) {
+      setEditOpen(false);
+    }
+  };
+
   const { updateTask } = useTask();
 
   const status = statuses.find(
@@ -29,17 +53,20 @@ export function DataTableRowStatus({ row }: any) {
   };
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center" ref={dropdownRef}>
       <Select
         value={status.value}
         onValueChange={handleStatus}
         defaultValue={status.value}
+        onOpenChange={handleDropdownToggle} open={open}
       >
-        <SelectTrigger asChild>
-          <Button variant="ghost" className="truncate flex max-w-[150px] items-center gap-2 rounded-md py-2">
-            <status.icon />
-            <SelectValue>{status.label}</SelectValue>
-          </Button>
+        <SelectTrigger 
+          className="truncate flex max-w-[150px] items-center gap-2 rounded-md py-2"
+          onPointerDown={(e) => e.preventDefault()}
+          onClick={() => setOpen((prev) => !prev)}
+          >
+          <status.icon />
+          <SelectValue>{status.label}</SelectValue>
         </SelectTrigger>
         <SelectContent
           position="popper"
@@ -49,7 +76,7 @@ export function DataTableRowStatus({ row }: any) {
             <SelectItem
               key={index}
               value={status.value}
-              className="relative flex w-full select-none items-center rounded-md py-2 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-secondary cursor-pointer"
+              className="relative flex w-full select-none items-center rounded-md py-2 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-secondary cursor-pointer select-none"
             >
               <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
                 <SelectItemIndicator>

@@ -11,14 +11,14 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title:
-    "jobLog - An Applicant Tracker",
+    "jobLog - Application Tracker",
   description:
-    "Elevate your productivity with iTasks — simplifying task management with seamless efficiency and mastering your time effectively.",
+    "Manage your job application effortlessly.",
   authors: [
-    { name: "Al Siam" },
+    { name: "Muhammad Zulfikar" },
     {
-      name: "Al Siam",
-      url: "https://www.x.com/_alsiam/",
+      name: "Muhammad Zulfikar",
+      url: "https://github.com/muhammad-zulfikar/",
     },
   ],
   icons: [
